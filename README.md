@@ -7,4 +7,3 @@ Apple-inspired dark theme + per-message action toolbar for [Mailspring](https://
 ```bash
 chmod +x install.sh && ./install.sh
 ```
-# mailspringappledark-
