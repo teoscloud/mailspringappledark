@@ -7,6 +7,7 @@ const {
   GetMessageRFC2822Task,
   FocusedPerspectiveStore,
 } = require('mailspring-exports');
+const { getElectronRemote } = require('./electron-remote');
 const { Menu } = require('mailspring-component-kit');
 
 class AppleMailToolbar extends React.Component {
@@ -95,28 +96,34 @@ class AppleMailToolbar extends React.Component {
 
   async _onShowOriginal() {
     const { message } = this.props;
-    const filepath = require('path').join(
-      require('@electron/remote').app.getPath('temp'),
-      message.id
-    );
-    const task = new GetMessageRFC2822Task({
-      messageId: message.id,
-      accountId: message.accountId,
-      filepath,
-    });
-    Actions.queueTask(task);
-    await TaskQueue.waitForPerformRemote(task);
-    const { BrowserWindow } = require('@electron/remote');
-    const win = new BrowserWindow({
-      width: 800,
-      height: 600,
-      title: `${message.subject} - RFC822`,
-      webPreferences: {
-        javascript: false,
-        nodeIntegration: false,
-      },
-    });
-    win.loadURL(`file://${filepath}`);
+    try {
+      const remote = getElectronRemote();
+      const filepath = require('path').join(remote.app.getPath('temp'), message.id);
+      const task = new GetMessageRFC2822Task({
+        messageId: message.id,
+        accountId: message.accountId,
+        filepath,
+      });
+      Actions.queueTask(task);
+      await TaskQueue.waitForPerformRemote(task);
+      const win = new remote.BrowserWindow({
+        width: 800,
+        height: 600,
+        title: `${message.subject} - RFC822`,
+        webPreferences: {
+          javascript: false,
+          nodeIntegration: false,
+        },
+      });
+      win.loadURL(`file://${filepath}`);
+    } catch (err) {
+      if (typeof AppEnv !== 'undefined' && AppEnv.showErrorDialog) {
+        AppEnv.showErrorDialog({
+          title: localized('Show Original'),
+          message: err && err.message ? err.message : String(err),
+        });
+      }
+    }
     this.setState({ archiveMenuOpen: false });
   }
 

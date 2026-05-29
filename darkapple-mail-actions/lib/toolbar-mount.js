@@ -7,6 +7,8 @@ const {
   GetMessageRFC2822Task,
   FocusedPerspectiveStore,
 } = require('mailspring-exports');
+const { getElectronRemote } = require('./electron-remote');
+const { openShowOriginalWindow } = require('./show-original-view');
 
 // --- lightweight debug logging (only errors / mount problems) ---
 const _fs = require('fs');
@@ -35,7 +37,7 @@ const ICONS = {
   forward: `<svg ${SVG_ATTRS}><path d="M10 4l5 5-5 5"/><path d="M15 9H8.5a5 5 0 0 0-5 5"/></svg>`,
   trash: `<svg ${SVG_ATTRS}><path d="M3 5h12"/><path d="M7 5V3.6A1.6 1.6 0 0 1 8.6 2h.8A1.6 1.6 0 0 1 11 3.6V5"/><path d="M4.6 5l.7 9.1A1.6 1.6 0 0 0 6.9 15.6h4.2a1.6 1.6 0 0 0 1.6-1.5L13.4 5"/><path d="M7.5 8v4.2M10.5 8v4.2"/></svg>`,
   archive: `<svg ${SVG_ATTRS}><rect x="2.5" y="3" width="13" height="3.3" rx="1"/><path d="M3.6 6.3v7.2A1.6 1.6 0 0 0 5.2 15h7.6a1.6 1.6 0 0 0 1.6-1.5V6.3"/><path d="M7 9h4"/></svg>`,
-  chevron: `<svg ${SVG_ATTRS}><path d="M5 7.5 9 11.5l4-4"/></svg>`,
+  source: `<svg ${SVG_ATTRS}><path d="M5.5 4 2.5 9l3 5"/><path d="M12.5 4l3 5-3 5"/></svg>`,
 };
 
 function getMessages() {
@@ -233,16 +235,25 @@ function onDelete(thread) {
   );
 }
 
-function escapeHtml(str) {
-  return String(str).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+function showOriginalError(message) {
+  dbg(`onShowOriginal ERROR: ${message}`);
+  try {
+    if (typeof AppEnv !== 'undefined' && AppEnv.showErrorDialog) {
+      AppEnv.showErrorDialog({
+        title: localized('Show Original'),
+        message,
+      });
+    }
+  } catch (err) {
+    // ignore
+  }
 }
 
+// Fetch raw RFC2822 and open a themed viewer window.
 async function onShowOriginal(message) {
   try {
-    const remote = require('@electron/remote');
-    const pathmod = require('path');
-    const fsmod = require('fs');
-    const filepath = pathmod.join(remote.app.getPath('temp'), `${message.id}.eml`);
+    const remote = getElectronRemote();
+    const filepath = _path.join(remote.app.getPath('temp'), `${message.id}.eml`);
 
     const task = new GetMessageRFC2822Task({
       messageId: message.id,
@@ -252,102 +263,16 @@ async function onShowOriginal(message) {
     Actions.queueTask(task);
     await TaskQueue.waitForPerformRemote(task);
 
-    let raw = '';
-    try {
-      raw = fsmod.readFileSync(filepath, 'utf8');
-    } catch (readErr) {
-      dbg(`onShowOriginal read ERROR: ${readErr}`);
+    const raw = _fs.readFileSync(filepath, 'utf8');
+    if (!raw) {
+      showOriginalError(localized('Could not load the original message source.'));
+      return;
     }
 
-    const win = new remote.BrowserWindow({
-      width: 820,
-      height: 720,
-      title: `${message.subject || localized('Message')} — ${localized('Original')}`,
-      webPreferences: { javascript: false, nodeIntegration: false, contextIsolation: true },
-    });
-
-    if (raw) {
-      const html =
-        '<!doctype html><html><head><meta charset="utf-8">' +
-        '<style>html,body{margin:0;background:#1c1c1e;color:#e6e6e6;}' +
-        'pre{white-space:pre-wrap;word-break:break-word;padding:18px;margin:0;' +
-        'font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}</style></head>' +
-        `<body><pre>${escapeHtml(raw)}</pre></body></html>`;
-      win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
-    } else {
-      win.loadURL(`file://${filepath}`);
-    }
+    await openShowOriginalWindow(message, raw, filepath);
   } catch (err) {
-    dbg(`onShowOriginal ERROR: ${err && err.stack ? err.stack : err}`);
+    showOriginalError(err && err.message ? err.message : String(err));
   }
-}
-
-let _openMenu = null;
-function closeMenu() {
-  if (_openMenu) {
-    if (_openMenu.parentNode) {
-      _openMenu.parentNode.removeChild(_openMenu);
-    }
-    _openMenu = null;
-    document.removeEventListener('mousedown', onDocMouseDown, true);
-    window.removeEventListener('blur', closeMenu);
-  }
-}
-
-function onDocMouseDown(event) {
-  if (_openMenu && !_openMenu.contains(event.target)) {
-    closeMenu();
-  }
-}
-
-// Custom in-app dropdown (Electron's native Menu.popup is unreliable here and
-// was silently not showing). Positioned with fixed coords off the anchor so the
-// message card's `overflow: hidden` can't clip it.
-function showArchiveMenu(anchor, thread, message) {
-  const wasOpen = !!_openMenu;
-  closeMenu();
-  if (wasOpen) {
-    return;
-  }
-
-  const menu = document.createElement('div');
-  menu.className = 'apple-mail-toolbar-menu';
-
-  const addItem = (label, danger, onClick) => {
-    const item = document.createElement('button');
-    item.type = 'button';
-    item.className = 'apple-mail-toolbar-menu-item' + (danger ? ' is-danger' : '');
-    item.textContent = label;
-    item.addEventListener('click', (event) => {
-      stopEvent(event);
-      closeMenu();
-      onClick();
-    });
-    menu.appendChild(item);
-  };
-
-  addItem(localized('Show Original'), false, () => onShowOriginal(message));
-  addItem(localized('Delete'), true, () => onDelete(thread));
-
-  document.body.appendChild(menu);
-
-  const rect = anchor.getBoundingClientRect();
-  let left = rect.right - menu.offsetWidth;
-  if (left < 8) {
-    left = 8;
-  }
-  let top = rect.bottom + 4;
-  if (top + menu.offsetHeight > window.innerHeight - 8) {
-    top = rect.top - menu.offsetHeight - 4;
-  }
-  menu.style.left = `${Math.round(left)}px`;
-  menu.style.top = `${Math.round(top)}px`;
-
-  _openMenu = menu;
-  setTimeout(() => {
-    document.addEventListener('mousedown', onDocMouseDown, true);
-    window.addEventListener('blur', closeMenu);
-  }, 0);
 }
 
 function buildToolbar(state) {
@@ -379,44 +304,44 @@ function buildToolbar(state) {
   );
   root.appendChild(pill);
 
-  if (canDelete) {
-    root.appendChild(
-      makeIconButton(
-        ICONS.trash,
-        localized('Delete'),
-        'apple-mail-toolbar-btn apple-mail-toolbar-delete',
-        () => onDelete(thread)
-      )
-    );
+  if (canArchive || canDelete) {
+    const actionPill = document.createElement('div');
+    actionPill.className = 'apple-mail-toolbar-pill';
+    actionPill.setAttribute('role', 'group');
+    actionPill.setAttribute('aria-label', localized('Message actions'));
+
+    if (canArchive) {
+      actionPill.appendChild(
+        makeIconButton(
+          ICONS.archive,
+          localized('Archive'),
+          'apple-mail-toolbar-segment apple-mail-toolbar-archive',
+          () => onArchive(thread)
+        )
+      );
+    }
+    if (canDelete) {
+      actionPill.appendChild(
+        makeIconButton(
+          ICONS.trash,
+          localized('Delete'),
+          'apple-mail-toolbar-segment apple-mail-toolbar-delete',
+          () => onDelete(thread)
+        )
+      );
+    }
+
+    root.appendChild(actionPill);
   }
 
-  if (canArchive) {
-    const split = document.createElement('div');
-    split.className = 'apple-mail-toolbar-split';
-
-    split.appendChild(
-      makeIconButton(
-        ICONS.archive,
-        localized('Archive'),
-        'apple-mail-toolbar-btn apple-mail-toolbar-archive',
-        () => onArchive(thread)
-      )
-    );
-
-    const menuBtn = document.createElement('button');
-    menuBtn.type = 'button';
-    menuBtn.className = 'apple-mail-toolbar-btn apple-mail-toolbar-archive-menu';
-    menuBtn.innerHTML = ICONS.chevron;
-    menuBtn.title = localized('Archive options');
-    menuBtn.setAttribute('aria-label', localized('Archive options'));
-    menuBtn.addEventListener('click', (event) => {
-      stopEvent(event);
-      showArchiveMenu(menuBtn, thread, message);
-    });
-    split.appendChild(menuBtn);
-
-    root.appendChild(split);
-  }
+  root.appendChild(
+    makeIconButton(
+      ICONS.source,
+      localized('Show Original'),
+      'apple-mail-toolbar-btn apple-mail-toolbar-show-original',
+      () => onShowOriginal(message)
+    )
+  );
 
   return root;
 }
@@ -489,7 +414,6 @@ function stopToolbarMount() {
     clearInterval(_pollTimer);
     _pollTimer = null;
   }
-  closeMenu();
   cleanupHosts(null);
 }
 
