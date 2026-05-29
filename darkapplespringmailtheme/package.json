@@ -1,0 +1,13 @@
+{
+  "name": "darkapplespringmailtheme",
+  "title": "Dark Apple",
+  "displayName": "Dark Apple",
+  "theme": "ui",
+  "version": "1.0.0",
+  "description": "An Apple-inspired dark theme for Mailspring — clean surfaces, system blue accents, and subtle separators.",
+  "license": "MIT",
+  "engines": {
+    "mailspring": "*"
+  },
+  "main": "lib/main.js"
+}

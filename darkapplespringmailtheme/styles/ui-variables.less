@@ -1,0 +1,159 @@
+/*
+  Dark Apple — ui-variables.less
+
+  Palette based on macOS dark mode (Sonoma / Sequoia):
+  - Elevated surfaces: #1C1C1E, #2C2C2E, #3A3A3C
+  - System blue:       #0A84FF
+  - Label hierarchy:   #FFFFFF → rgba(235,235,245,0.6) → rgba(235,235,245,0.3)
+*/
+@import "base/ui-variables";
+
+// Grayscale (inverted scale for dark themes — matches Mailspring starter pattern)
+@gray-base: #ffffff;
+@gray-darker: darken(@gray-base, 13.5%);
+@gray-dark: darken(@gray-base, 20%);
+@gray: darken(@gray-base, 33.5%);
+@gray-light: darken(@gray-base, 46.7%);
+@gray-lighter: darken(@gray-base, 92.5%);
+@white: #000000;
+
+// Apple system colors (dark mode)
+@apple-blue: #0a84ff;
+@apple-blue-dark: #409cff;
+@apple-green: #30d158;
+@apple-orange: #ff9f0a;
+@apple-red: #ff453a;
+@apple-purple: #bf5af2;
+
+// Surface hierarchy (lightest → darkest):
+// row/reply #2c2c2e → canvas #28282a (slightly darker, replaces pure black)
+@apple-bg-row: #2c2c2e;
+@apple-bg-canvas: #28282a;
+@apple-bg-primary: @apple-bg-row;
+@apple-bg-secondary: @apple-bg-canvas;
+@apple-bg-elevated: @apple-bg-row;
+@apple-bg-tertiary: #3a3a3c;
+@apple-bg-grouped: @apple-bg-canvas;
+
+// Email iframe reading surface — slightly darker than the message card, never pure black.
+@apple-email-surface: darken(@apple-bg-elevated, 5%);
+
+@apple-separator: rgba(84, 84, 88, 0.65);
+@apple-separator-opaque: #38383a;
+
+@apple-label-primary: #ffffff;
+@apple-label-secondary: rgba(235, 235, 245, 0.6);
+@apple-label-tertiary: rgba(235, 235, 245, 0.3);
+@apple-label-quaternary: rgba(235, 235, 245, 0.18);
+
+// Accent — fixed Apple blue (overrides OS tint for consistent look)
+@accent-primary: @apple-blue;
+@accent-primary-dark: @apple-blue-dark;
+
+@background-primary: @apple-bg-elevated;
+@background-off-primary: @apple-bg-primary;
+@background-secondary: @apple-bg-secondary;
+@background-tertiary: @apple-bg-tertiary;
+
+@color-info: @apple-blue;
+@color-success: @apple-green;
+@color-warning: @apple-orange;
+@color-error: @apple-red;
+@color-danger: @apple-red;
+
+@component-active-color: @apple-blue;
+@component-active-bg: @apple-bg-elevated;
+
+// Flat — no gradients on list rows or hover overlays
+@background-gradient: @apple-bg-row;
+
+@border-color-primary: @apple-separator-opaque;
+@border-color-secondary: @apple-separator-opaque;
+@border-color-tertiary: lighten(@apple-bg-tertiary, 8%);
+@border-color-divider: @apple-separator-opaque;
+
+// Typography — prefer SF Pro / system UI stack
+@font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+  'Helvetica Neue', 'Helvetica', sans-serif;
+@font-family: @font-family-sans-serif;
+@font-family-heading: @font-family-sans-serif;
+
+@text-color: @apple-label-primary;
+@text-color-subtle: @apple-label-secondary;
+@text-color-very-subtle: @apple-label-tertiary;
+@text-color-inverse: @apple-label-primary;
+@text-color-inverse-subtle: @apple-label-secondary;
+@text-color-inverse-very-subtle: @apple-label-tertiary;
+
+@text-color-heading: @apple-label-primary;
+
+@text-color-link: @apple-blue;
+@text-color-link-hover: @apple-blue-dark;
+@text-color-link-active: @apple-blue-dark;
+
+@text-color-selected: @apple-label-primary;
+
+@text-color-search-match: #ffd60a;
+@text-color-search-current-match: @apple-orange;
+
+@standard-shadow-color: rgba(0, 0, 0, 0.45);
+@standard-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+@standard-shadow-up: 0 -2px 8px rgba(0, 0, 0, 0.35);
+@shadow-border: 0 0 0 0.5px @apple-separator-opaque;
+
+@border-radius-base: 6px;
+@border-radius-large: 10px;
+@border-radius-small: 4px;
+@component-border-radius: 8px;
+
+// Buttons
+@btn-default-bg-color: @apple-bg-tertiary;
+@btn-default-text-color: @apple-label-primary;
+@btn-icon-color: @apple-label-secondary;
+@btn-emphasis-bg-color: @apple-blue;
+@btn-emphasis-text-color: @apple-label-primary;
+
+// Dropdowns
+@dropdown-default-bg-color: @apple-bg-elevated;
+@dropdown-default-text-color: @apple-label-primary;
+@dropdown-default-border-color: @apple-separator-opaque;
+
+// Inputs
+@input-bg: @apple-bg-tertiary;
+@input-bg-disabled: @apple-bg-primary;
+@input-border-color: @apple-separator-opaque;
+@input-border-color-blurred: @apple-separator-opaque;
+
+// Toolbar & sidebar
+@toolbar-background-color: @apple-bg-primary;
+@panel-background-color: @apple-bg-grouped;
+@source-list-bg: @apple-bg-grouped;
+@source-list-active-bg: rgba(10, 132, 255, 0.18);
+@source-list-active-color: @apple-blue;
+
+// Thread list
+@list-bg: @apple-bg-canvas;
+@list-border: @apple-separator-opaque;
+@list-hover-bg: darken(@apple-bg-row, 4%);
+@list-focused-color: @apple-label-primary;
+@list-focused-bg: rgba(10, 132, 255, 0.22);
+@list-focused-border: @apple-blue;
+@list-selected-color: @apple-label-primary;
+@list-selected-bg: rgba(10, 132, 255, 0.18);
+@list-selected-border: rgba(10, 132, 255, 0.45);
+
+// Notifications
+@background-color-info: @apple-blue;
+@background-color-success: @apple-green;
+@background-color-warning: @apple-orange;
+@background-color-error: @apple-red;
+@background-color-pending: @apple-label-tertiary;
+
+// Menus
+@menu-item-color-hover: rgba(255, 255, 255, 0.06);
+@menu-item-color-selected: rgba(10, 132, 255, 0.24);
+@menu-text-color-selected: @apple-label-primary;
+
+// Features
+@open-tracking-color: @apple-purple;
+@link-tracking-color: @apple-red;

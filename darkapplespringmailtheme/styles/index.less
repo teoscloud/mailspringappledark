@@ -1,0 +1,218 @@
+@import "ui-variables";
+@import "thread-list";
+@import "message-list";
+@import "sidebar";
+@import "composer";
+
+// Global
+body,
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Toolbar — flat Apple-style chrome
+.sheet-toolbar {
+  background: @toolbar-background-color;
+  border-bottom: 0.5px solid @apple-separator-opaque;
+  box-shadow: none;
+}
+
+.sheet-toolbar-container {
+  box-shadow: none;
+}
+
+// Buttons — flat, subtle pill feel (kills the stock gradient + raised border)
+.btn {
+  background: transparent;
+  background-image: none;
+  border-radius: @component-border-radius;
+  border: 0.5px solid transparent;
+  box-shadow: none;
+  color: @apple-label-primary;
+  font-weight: @font-weight-medium;
+  text-shadow: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  &:active,
+  &.active {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &.btn-emphasis {
+    background-color: @apple-blue;
+    background-image: none;
+    border-color: transparent;
+    color: @apple-label-primary;
+
+    &:hover {
+      background-color: @apple-blue-dark;
+    }
+  }
+}
+
+// Top sheet toolbar (Compose, Archive, Mark as Spam, Trash, Flag, …) — make
+// the icon buttons completely flat and on-theme. High specificity + !important
+// to beat the stock gradient/border/box-shadow baked into core styles.
+.sheet-toolbar {
+  .btn,
+  .btn.btn-toolbar,
+  button.btn {
+    background: transparent !important;
+    background-image: none !important;
+    border: 0.5px solid transparent !important;
+    border-radius: @component-border-radius !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    &:active,
+    &.active {
+      background-color: rgba(255, 255, 255, 0.14) !important;
+    }
+  }
+
+  // Segmented button groups — drop the heavy dividers/insets
+  .btn-group,
+  .button-group {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  // Compose new message — primary blue action button (top-left)
+  .btn.item-compose {
+    background: @apple-blue !important;
+    background-image: none !important;
+    border: 0.5px solid transparent !important;
+    border-radius: @component-border-radius !important;
+    box-shadow: none !important;
+
+    &:hover {
+      background: @apple-blue-dark !important;
+    }
+
+    // Tint the masked pencil icon white so it reads on blue.
+    .content-mask,
+    img {
+      background-color: #ffffff !important;
+    }
+  }
+}
+
+// Text inputs — readable on dark surfaces.
+// NOTE: kept intentionally minimal. The decorative inset/border style below is
+// scoped to search & standalone fields only, so it never leaks into the
+// composer's To/Subject/body fields (which previously looked broken).
+input,
+textarea,
+select {
+  color: @apple-label-primary;
+
+  &::placeholder {
+    color: @apple-label-tertiary;
+  }
+}
+
+// Search & standalone form fields — inset macOS look
+.search-bar input,
+.nylas-search-bar input,
+input[type='search'] {
+  background: @apple-bg-tertiary;
+  border-radius: @border-radius-base;
+  border: 0.5px solid @apple-separator-opaque;
+  color: @apple-label-primary;
+
+  &:focus {
+    border-color: @apple-blue;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+    outline: none;
+  }
+}
+
+// Dropdowns
+.dropdown-menu {
+  background: @apple-bg-elevated;
+  border: 0.5px solid @apple-separator-opaque;
+  border-radius: @border-radius-large;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  padding: 4px 0;
+
+  .item {
+    border-radius: @border-radius-small;
+    margin: 0 4px;
+
+    &:hover {
+      background: @menu-item-color-hover;
+    }
+
+    &.selected,
+    &.active {
+      background: @menu-item-color-selected;
+      color: @apple-label-primary;
+    }
+  }
+}
+
+// Scrollbars — thin macOS-style
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+}
+
+// Icons — invert for dark surfaces
+.thread-icon:not(.thread-icon-unread):not(.thread-icon-star) {
+  -webkit-filter: invert(85%) sepia(5%) saturate(200%) hue-rotate(180deg);
+}
+
+img.content-dark {
+  -webkit-filter: invert(90%);
+}
+
+img.content-light {
+  -webkit-filter: invert(90%);
+}
+
+// Mail labels — slightly muted chips
+.mail-label {
+  border-radius: 4px;
+  -webkit-filter: contrast(105%) brightness(90%);
+}
+
+// Search highlights
+.search-match {
+  background: rgba(255, 214, 10, 0.35);
+  border-radius: 2px;
+}
+
+.search-current-match {
+  background: rgba(255, 159, 10, 0.4);
+  border-radius: 2px;
+}
+
+// Notifications
+.notification {
+  border-radius: @border-radius-large;
+  box-shadow: @standard-shadow;
+}

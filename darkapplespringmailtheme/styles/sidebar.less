@@ -1,0 +1,87 @@
+// Account sidebar — grouped list like macOS Settings / Mail
+
+.account-sidebar {
+  background: @panel-background-color;
+  border-right: 0.5px solid @apple-separator-opaque;
+
+  // Catch any stock sidebar hover fills from bundled outline-view styles.
+  .outline-view .item:hover,
+  .account-sidebar-sections .item:hover,
+  .item-container .item:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+}
+
+.outline-view {
+  .item {
+    color: @apple-label-primary;
+    transition: color 0.12s ease;
+
+    // No hover background — selection is text color only.
+    &:hover {
+      background: transparent !important;
+      background-color: transparent !important;
+      color: @apple-label-primary;
+    }
+
+    // Selected item: no background fill — just blue text + a blue-tinted icon.
+    &.selected,
+    &.active {
+      background: transparent !important;
+      color: @apple-blue;
+      font-weight: @font-weight-medium;
+
+      .name {
+        color: @apple-blue;
+      }
+
+      // Sidebar icons are mask images tinted via background-color.
+      .content-mask {
+        background-color: @apple-blue !important;
+      }
+
+      &:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: @apple-blue;
+      }
+    }
+  }
+
+  .heading {
+    color: @apple-label-tertiary;
+    font-size: @font-size-smaller;
+    font-weight: @font-weight-medium;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+// Unread / item count bubbles.
+// The bubble fill is blue, so force white text (it was inheriting the blue
+// accent from the selected item, leaving blue-on-blue and unreadable).
+.account-sidebar {
+  .item .item-count-box {
+    color: #ffffff !important;
+    background: @apple-bg-tertiary;
+    border-radius: 9px;
+    font-weight: @font-weight-medium;
+    padding: 1px 7px;
+  }
+
+  // Unread counts use the blue accent; keep the text white.
+  .item .item-count-box.unread,
+  .item.selected .item-count-box,
+  .item.selected .item-count-box.unread {
+    background: @apple-blue;
+    color: #ffffff !important;
+  }
+}
+
+// Sidebar section dividers
+.section-divider {
+  background: @apple-separator-opaque;
+  height: 0.5px;
+  margin: 8px 16px;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "darkapple-mail-actions",
+  "displayName": "Dark Apple Mail Actions",
+  "version": "1.0.0",
+  "main": "./lib/main",
+  "description": "Apple Mail–style Reply / Reply All / Forward pill, Delete, and Archive menu for message view.",
+  "license": "MIT",
+  "engines": {
+    "mailspring": "*"
+  },
+  "windowTypes": {
+    "default": true,
+    "thread-popout": true
+  }
+}

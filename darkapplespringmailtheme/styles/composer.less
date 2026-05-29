@@ -1,0 +1,204 @@
+// Composer — dark, readable, no stray borders.
+
+@composer-card-margin-h: 12px;
+@composer-card-margin-v: 8px;
+
+.composer-inner-wrap,
+.composer-full-window {
+  background: @apple-bg-row;
+  color: @apple-label-primary;
+}
+
+// Inline reply composer — match email card width (margin on wrap, not full bleed)
+#message-list {
+  .message-item-wrap.before-reply-area {
+    box-sizing: border-box;
+    margin: @composer-card-margin-v @composer-card-margin-h !important;
+    overflow: visible !important;
+    width: auto;
+
+    .composer-outer-wrap,
+    .message-item-white-wrap.composer-outer-wrap {
+      background: @apple-bg-row !important;
+      border: 0.5px solid @apple-separator-opaque;
+      border-radius: @border-radius-large !important;
+      box-shadow: none;
+      margin: 0 !important;
+      overflow: visible !important;
+      width: 100%;
+
+      .composer-inner-wrap {
+        overflow: visible !important;
+      }
+
+      .composer-action-bar-wrap {
+        background: @apple-bg-row !important;
+        overflow: visible !important;
+        position: relative;
+        z-index: 5;
+      }
+
+      .RichEditor-toolbar .inner {
+        background: @apple-bg-row !important;
+      }
+
+      &.focused {
+        background: @apple-bg-row !important;
+        box-shadow: none;
+      }
+    }
+  }
+
+  &.restrict-width .message-item-wrap.before-reply-area {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 800px;
+  }
+}
+
+.composer-inner-wrap {
+  input,
+  textarea,
+  .composer-subject input,
+  .tokenizing-field-input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: @apple-label-primary;
+
+    &:focus {
+      border: none !important;
+      box-shadow: none !important;
+      outline: none;
+    }
+
+    &::placeholder,
+    &::-webkit-input-placeholder {
+      color: @apple-label-tertiary;
+    }
+  }
+
+  .composer-field-label {
+    color: @apple-label-secondary;
+  }
+
+  .composer-participant-field:after,
+  .composer-subject:after {
+    background: @apple-separator-opaque;
+  }
+
+  .composer-participant-field .participant {
+    .participant-primary {
+      color: @apple-label-primary;
+    }
+    .participant-secondary {
+      color: @apple-label-secondary;
+    }
+  }
+
+  .tokenizing-field .token {
+    background: @apple-bg-tertiary;
+    border: 0.5px solid @apple-separator-opaque;
+    color: @apple-label-primary;
+
+    &.dragging,
+    &.selected {
+      background: @apple-blue;
+      color: #ffffff;
+    }
+  }
+}
+
+.RichEditor-root .RichEditor-content,
+.composer-editor-plaintext textarea {
+  color: @apple-label-primary;
+}
+
+.RichEditor-toolbar .inner {
+  background: @apple-bg-row;
+}
+
+.composer-action-bar-wrap {
+  background: @apple-bg-row !important;
+  border-top: 0.5px solid @apple-separator-opaque !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.composer-full-window .composer-inner-wrap .composer-action-bar-wrap {
+  background: @apple-bg-row !important;
+}
+
+// Apple-style pill Send button + dropdown that can escape the card
+#message-list .composer-action-bar-wrap,
+.composer-action-bar-wrap {
+  .btn-send.button-dropdown,
+  .button-dropdown.btn-send {
+    background: @apple-blue !important;
+    border: none !important;
+    border-radius: 980px !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    display: inline-flex !important;
+    margin-right: 10px;
+    min-height: 28px;
+    overflow: visible !important;
+    padding: 0 !important;
+
+    .primary-item,
+    .secondary-picker {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #ffffff !important;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 28px;
+      padding: 0 12px;
+    }
+
+    .primary-item {
+      border-radius: 980px 0 0 980px !important;
+      padding-left: 14px;
+    }
+
+    .secondary-picker {
+      border-left: 0.5px solid rgba(255, 255, 255, 0.25) !important;
+      border-radius: 0 980px 980px 0 !important;
+      min-width: 28px;
+      padding: 0 10px 0 8px;
+    }
+
+    &:hover {
+      background: @apple-blue-dark !important;
+    }
+
+    &.open .menu,
+    .menu {
+      background: @apple-bg-elevated !important;
+      border: 0.5px solid @apple-separator-opaque !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+      margin-top: 4px;
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    &.open.open-down .menu {
+      bottom: 100%;
+      margin-bottom: 6px;
+      top: auto;
+    }
+  }
+}
+
+// Let the message list scroll area show dropdowns at the bottom edge
+#message-list .messages-wrap,
+#message-list .scroll-region-content,
+#message-list .scroll-region-content-inner {
+  overflow-x: hidden;
+}
+
+#message-list .scroll-region-content-inner {
+  padding-bottom: 24px;
+}

@@ -1,0 +1,151 @@
+// Local palette — matches Dark Apple theme; kept here so the plugin works
+// even if imported ui-variables paths differ between installs.
+@apple-bg-elevated: #2c2c2e;
+@apple-bg-tertiary: #3a3a3c;
+@apple-separator-opaque: #48484a;
+@apple-label-primary: #ffffff;
+@apple-label-secondary: rgba(235, 235, 245, 0.6);
+@apple-label-tertiary: rgba(235, 235, 245, 0.3);
+@apple-blue: #0a84ff;
+@apple-red: #ff453a;
+
+// Host is injected inline into the message header, just left of the timestamp.
+.apple-mail-toolbar-host {
+  align-items: center;
+  display: inline-flex;
+  margin: 0 10px 0 0;
+  vertical-align: middle;
+}
+
+.apple-mail-toolbar {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+// Shared icon-button geometry
+.apple-mail-toolbar-segment,
+.apple-mail-toolbar-btn {
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: @apple-label-secondary;
+  cursor: default;
+  display: inline-flex;
+  height: 25px;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  width: 35px;
+
+  svg {
+    display: block;
+    height: 17px;
+    width: 17px;
+  }
+
+  &:hover:not(:disabled) {
+    color: @apple-label-primary;
+  }
+}
+
+// Grouped Reply / Reply All / Forward pill
+.apple-mail-toolbar-pill {
+  background: @apple-bg-tertiary;
+  border-radius: 7px;
+  display: inline-flex;
+  overflow: hidden;
+
+  .apple-mail-toolbar-segment {
+    border-radius: 0;
+
+    &:not(:last-child) {
+      box-shadow: inset -0.5px 0 0 @apple-separator-opaque;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Standalone buttons (Delete, Archive split)
+.apple-mail-toolbar-btn {
+  background: @apple-bg-tertiary;
+  border-radius: 7px;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.apple-mail-toolbar-delete:hover:not(:disabled) {
+  background: rgba(255, 69, 58, 0.2);
+  color: @apple-red;
+}
+
+.apple-mail-toolbar-split {
+  background: @apple-bg-tertiary;
+  border-radius: 7px;
+  display: inline-flex;
+  overflow: hidden;
+
+  .apple-mail-toolbar-btn {
+    background: transparent;
+    border-radius: 0;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.apple-mail-toolbar-archive {
+  box-shadow: inset -0.5px 0 0 @apple-separator-opaque;
+}
+
+.apple-mail-toolbar-archive-menu {
+  width: 26px;
+
+  svg {
+    height: 15px;
+    width: 15px;
+  }
+}
+
+// In-app dropdown for the Archive split button (Show Original / Delete)
+.apple-mail-toolbar-menu {
+  background: @apple-bg-elevated;
+  border: 0.5px solid @apple-separator-opaque;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 5px;
+  position: fixed;
+  z-index: 100000;
+}
+
+.apple-mail-toolbar-menu-item {
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  color: @apple-label-primary;
+  cursor: default;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 10px;
+  text-align: left;
+  white-space: nowrap;
+
+  &:hover {
+    background: @apple-blue;
+    color: #ffffff;
+  }
+
+  &.is-danger:hover {
+    background: @apple-red;
+    color: #ffffff;
+  }
+}

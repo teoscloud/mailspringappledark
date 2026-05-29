@@ -1,0 +1,154 @@
+// Thread list — Apple Mail–inspired density, color & selection
+
+.thread-list {
+  background: @list-bg;
+
+  .list-container {
+    background: @list-bg;
+  }
+
+  .list-item {
+    background-color: @apple-bg-row;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    transition: background-color 0.12s ease;
+
+    // Star / unread column is oversized by default — shrink it so sender +
+    // subject start closer to the icons instead of far to the right.
+    .list-column-State {
+      flex: 0 0 28px !important;
+      justify-content: flex-start;
+      max-width: 28px !important;
+      min-width: 28px !important;
+      padding-left: 6px;
+      padding-right: 0;
+      width: 28px !important;
+    }
+
+    .list-column-Item {
+      padding-left: 4px !important;
+    }
+
+    .thread-icon {
+      height: 18px !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      width: 18px !important;
+    }
+
+    .star-button {
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+    }
+
+    // Primary text (sender + subject) is fully white, like Apple Mail.
+    .participants,
+    .subject {
+      color: @apple-label-primary;
+    }
+
+    // Secondary text (preview snippet + date) uses Apple's light gray.
+    .snippet,
+    .timestamp {
+      color: @apple-label-secondary;
+    }
+  }
+
+  // Subtle darken on hover — color only, no borders
+  .list-item:hover:not(.selected):not(.focused) {
+    background-color: @list-hover-bg;
+  }
+
+  // Unread rows: white primary text, heavier subject weight.
+  .list-item.unread:not(.focused) {
+    background-color: @apple-bg-row;
+
+    .participants,
+    .subject {
+      color: @apple-label-primary;
+    }
+    .subject {
+      font-weight: @font-weight-semi-bold;
+    }
+  }
+
+  .list-item.unread:not(.focused):not(.selected):hover {
+    background-color: @list-hover-bg;
+  }
+
+  // Selected / focused — background color only, no rails or underlines
+  .list-item.selected {
+    background-color: @list-selected-bg;
+    border-left: none;
+    border-bottom: none;
+    box-shadow: none;
+
+    .participants,
+    .subject,
+    .snippet,
+    .timestamp {
+      color: @apple-label-primary;
+    }
+  }
+
+  .list-item.focused {
+    background-color: @list-focused-bg;
+    border-left: none;
+    border-bottom: none;
+    box-shadow: none;
+
+    .participants,
+    .subject,
+    .snippet,
+    .timestamp {
+      color: @apple-label-primary;
+    }
+  }
+
+  // Stock theme adds colored bottom borders on selected/unread rows
+  .list-item.selected,
+  .list-item.focused,
+  .list-item.unread.selected,
+  .list-item.unread.focused {
+    border-bottom-color: transparent !important;
+  }
+}
+
+// Remove per-row hover quick actions (archive / trash / snooze)
+.thread-list .list-item .list-column-HoverActions {
+  display: none !important;
+}
+
+// Kill any leftover gradient overlays from the stock theme
+.thread-list .list-item:hover .list-column-HoverActions .inner,
+.thread-list .list-item.selected:hover .list-column-HoverActions .inner,
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner,
+.thread-list.handler-split .list-item.selected:hover .list-column-HoverActions .inner {
+  background-image: none !important;
+  background: transparent !important;
+}
+
+// Split-pane selection — flat color only
+.thread-list.handler-split {
+  .list-item.selected {
+    background: @list-focused-bg;
+    border-left: none;
+    border-bottom: none;
+    box-shadow: none;
+    color: @list-focused-color;
+  }
+}
+
+body.is-blurred .thread-list.handler-split .list-item.selected {
+  border-bottom: none !important;
+}
+
+// Column headers in split view
+.column-header {
+  background: @apple-bg-canvas;
+  border-bottom: 0.5px solid @apple-separator-opaque;
+  color: @apple-label-secondary;
+  font-size: @font-size-smaller;
+  font-weight: @font-weight-medium;
+  letter-spacing: 0.02em;
+}

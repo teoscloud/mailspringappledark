@@ -1,0 +1,76 @@
+// Message view — card-style reading pane
+
+@message-card-margin-h: 12px;
+@message-card-margin-v: 8px;
+@message-list-scroll-padding: 6px;
+@message-card-inset-h: @message-card-margin-h + @message-list-scroll-padding;
+
+#message-list {
+  background: @apple-bg-canvas;
+
+  .message-item-wrap {
+    .message-item-white-wrap:not(.composer-outer-wrap) {
+      background: @apple-bg-elevated;
+      border: 0.5px solid @apple-separator-opaque;
+      border-radius: @border-radius-large;
+      box-shadow: none;
+      margin: @message-card-margin-v @message-card-margin-h;
+      overflow: hidden;
+    }
+  }
+
+  // The "Write a reply…" placeholder is removed — replies are handled by the
+  // per-message Reply / Reply All / Forward buttons from the darkapple-mail-actions
+  // plugin. Keep it hidden unless it's actively hosting a composer draft.
+  .footer-reply-area-wrap:not(:has(.composer-outer-wrap)) {
+    display: none !important;
+  }
+
+  .message-subject-wrap {
+    border-bottom: 0.5px solid @apple-separator-opaque;
+    color: @apple-label-primary;
+    font-weight: @font-weight-semi-bold;
+  }
+
+  .message-participants {
+    color: @apple-label-secondary;
+  }
+
+  .message-time {
+    color: @apple-label-tertiary;
+    font-size: @font-size-smaller;
+  }
+
+  .message-body {
+    background: transparent;
+    color: @apple-label-primary;
+    line-height: 1.55;
+  }
+
+  a {
+    color: @apple-blue;
+
+    &:hover {
+      color: @apple-blue-dark;
+    }
+  }
+
+  // Hide stock Reply dropdown in header — replaced by darkapple-mail-actions plugin
+  .message-actions-wrap {
+    display: none !important;
+  }
+
+  // Toolbar host (injected by plugin) — sits inline in the message header,
+  // just left of the timestamp.
+  .apple-mail-toolbar-host {
+    align-items: center;
+    display: inline-flex;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+  }
+}
+
+// Empty state
+.empty-state {
+  color: @apple-label-tertiary;
+}

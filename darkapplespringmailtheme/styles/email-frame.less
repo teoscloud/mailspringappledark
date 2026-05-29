@@ -1,0 +1,97 @@
+// Injected into each email iframe (Mailspring strips `.ignore-in-parent-frame`).
+//
+// Smart dark conversion: full invert keeps colours saturated. Plain-text / no-bg
+// emails stay transparent (card shows through). Only explicit white backgrounds
+// in HTML are remapped so they land as @apple-email-surface, not pure #000.
+@import "ui-variables";
+
+// Full invert of @apple-email-surface — applied to declared whites before inversion.
+@apple-email-pre-invert: rgb(
+  (255 - red(@apple-email-surface)),
+  (255 - green(@apple-email-surface)),
+  (255 - blue(@apple-email-surface))
+);
+
+@email-invert-filter: invert(100%) hue-rotate(180deg) saturate(1.15) contrast(1.02);
+@email-img-filter: invert(100%) hue-rotate(180deg);
+
+.ignore-in-parent-frame {
+  html,
+  body {
+    background-color: transparent !important;
+    color: #111;
+  }
+
+  // Only touch elements that explicitly declare a white/light background.
+  table[bgcolor="#ffffff"],
+  table[bgcolor="#FFFFFF"],
+  table[bgcolor="#fff"],
+  table[bgcolor="#FFF"],
+  td[bgcolor="#ffffff"],
+  td[bgcolor="#FFFFFF"],
+  td[bgcolor="#fff"],
+  td[bgcolor="#FFF"],
+  th[bgcolor="#ffffff"],
+  th[bgcolor="#FFFFFF"],
+  th[bgcolor="#fff"],
+  th[bgcolor="#FFF"],
+  div[bgcolor="#ffffff"],
+  div[bgcolor="#FFFFFF"],
+  div[bgcolor="#fff"],
+  div[bgcolor="#FFF"],
+  tr[bgcolor="#ffffff"],
+  tr[bgcolor="#FFFFFF"],
+  tr[bgcolor="#fff"],
+  tr[bgcolor="#FFF"],
+  [style*="background-color: #fff"],
+  [style*="background-color:#fff"],
+  [style*="background-color: #FFF"],
+  [style*="background-color:#FFF"],
+  [style*="background-color: #ffffff"],
+  [style*="background-color:#ffffff"],
+  [style*="background-color: #FFFFFF"],
+  [style*="background-color:#FFFFFF"],
+  [style*="background-color: white"],
+  [style*="background-color:white"],
+  [style*="background-color: White"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #FFF"],
+  [style*="background:#FFF"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"],
+  [style*="background: #FFFFFF"],
+  [style*="background:#FFFFFF"],
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background-color: rgb(255, 255, 255)"],
+  [style*="background-color:rgb(255,255,255)"],
+  [style*="background-color: rgb(255,255,255)"] {
+    background-color: @apple-email-pre-invert !important;
+  }
+
+  body {
+    filter: @email-invert-filter;
+  }
+
+  img {
+    filter: @email-img-filter;
+  }
+
+  // Unicode emoji wrapped by lib/email-emoji-fix.js — second invert restores colors.
+  .darkapple-emoji-neutral {
+    display: inline;
+    filter: @email-invert-filter;
+  }
+
+  // Emoji image assets (Twemoji etc.) — use full body filter chain for a clean cancel.
+  img[src*="twemoji"],
+  img[src*="emojicdn"],
+  img[src*="/emoji/"] {
+    filter: @email-invert-filter;
+  }
+
+  #inbox-plain-wrapper {
+    background-color: transparent !important;
+  }
+}
